@@ -8,35 +8,53 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-//import org.apache.tomcat.jdbc.pool.DataSource;
-
-import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 @Path("/auth")
 public class Authenticate {
 
+	@Path("{username}")
     @GET
     @Produces("application/json")
-    public Response authenticateUser() throws JSONException {
+    public Response getUserRoles(@PathParam("username") String userName) {
     	
     	DatabaseAccess dbAccess = new DatabaseAccess();
-    	List<String> userRoles = dbAccess.getUserRole("hassan");
-    	
-    	for(String userRole: userRoles) {
-    		System.out.println(userRole);
-    	}
+    	List<String> userRoles = dbAccess.getUserRole(userName);
+    	JSONObject jsonObject = new JSONObject();
  
-        StringBuilder sb = new StringBuilder();
-        sb.append("ISTANBUL");
- 
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("original", sb.toString());
-        jsonObject.put("reversed", sb.reverse().toString());
- 
-        String result = "" + jsonObject;
+        jsonObject.put("userName", userName);
+        jsonObject.put("roles", new JSONArray(userRoles));  
+
+        String result = jsonObject.toString();
         
         return Response.status(200).entity(result).build();
+    }
+    
+    @Path("{username}/{password}")
+    @GET
+    @Produces("application/json")
+    public Response authenticateUser(@PathParam("username") String userName, 
+    								 @PathParam("password") String password) {
+    	
+    	DatabaseAccess dbAccess = new DatabaseAccess();
+    	User user = dbAccess.getUser(userName, password);
+    	JSONObject jsonObject = new JSONObject();
+    	int status = 401;
+    	
+    	if (user!=null) {
+            jsonObject.put("userName", user.getUserName());
+            jsonObject.put("roles", new JSONArray(user.getRoles()));  
+            jsonObject.put("authorized", true);
+            status = 200;
+    	}
+    	else {
+    		jsonObject.put("userName", userName);
+    		jsonObject.put("authorized", false);
+    	}
+    	
+    	String result = jsonObject.toString();
+    	return Response.status(status).entity(result).build();    	
     }
 
     

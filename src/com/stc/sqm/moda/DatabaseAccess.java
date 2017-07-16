@@ -13,6 +13,79 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public class DatabaseAccess {
+	
+	public User getUser(String userName, String password) {
+		
+		User user = null;
+		Connection conn = null;
+		Statement stmt = null; 
+		ResultSet rs = null;
+
+		try {
+
+			conn = getDBConnection(); 
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery("SELECT USERS.USERNAME,ROLES.ROLE FROM " + 
+					"MOD_USERS USERS, MOD_USERS_ROLES ROLES " + 
+					"WHERE USERS.USERNAME = ROLES.USERNAME AND " + 
+					"USERS.USERNAME = '"+ userName +"' AND " + 
+					"USERS.PASSWORD = '"+ password +"'");
+			
+			
+			if (rs.isBeforeFirst() ) {    
+				user = new User();
+				
+				while (rs.next()) {
+					user.setUserName(rs.getString("USERNAME"));
+					user.addRole(rs.getString("ROLE"));
+				}
+			}
+			else {
+				user = null;
+			    System.err.println("Invalid User");				
+			}
+			
+			rs.close();
+			rs = null;
+			stmt.close();
+			stmt = null;
+			conn.close(); // Return to connection pool
+			conn = null; // Make sure we don't close it twice
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Always make sure result sets and statements are closed,
+			// and the connection is returned to the pool
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					;
+				}
+				rs = null;
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					;
+				}
+				stmt = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					;
+				}
+				conn = null;
+			}
+		}
+
+		return user;		
+		
+	}
 
 	public List<String> getUserRole(String userName) {
 		
