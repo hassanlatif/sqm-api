@@ -1,3 +1,17 @@
+#maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar
+
 #Eclipes
 .metadata
 bin/
@@ -112,3 +126,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+target/m2e-wtp/web-resources/META-INF/MANIFEST.MF

@@ -156,7 +156,7 @@ public class DatabaseAccess {
 		try {
 			initContext = new InitialContext();
 			envContext = (Context) initContext.lookup("java:/comp/env");
-			dataSource = (DataSource) envContext.lookup("jdbc/sadbOracle");
+			dataSource = (DataSource) envContext.lookup("jdbc/sadb");
 			connection = dataSource.getConnection();
 
 			if (connection != null) {
