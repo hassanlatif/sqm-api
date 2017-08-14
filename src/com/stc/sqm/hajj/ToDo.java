@@ -1,9 +1,13 @@
 package com.stc.sqm.hajj;
 
 public class ToDo {
-
-	private String creatorUid;
-	private String creatorEmail;
+	
+	public int getTaskId() {
+		return taskId;
+	}
+	public void setTaskId(int taskId) {
+		this.taskId = taskId;
+	}
 	public String getCreatorUid() {
 		return creatorUid;
 	}
@@ -64,10 +68,10 @@ public class ToDo {
 	public void setTargetDate(String targetDate) {
 		this.targetDate = targetDate;
 	}
-	public String getPriority() {
+	public int getPriority() {
 		return priority;
 	}
-	public void setPriority(String priority) {
+	public void setPriority(int priority) {
 		this.priority = priority;
 	}
 	public String getAssignedEmail() {
@@ -82,16 +86,21 @@ public class ToDo {
 	public void setAssignedMobile(String assignedMobile) {
 		this.assignedMobile = assignedMobile;
 	}
+	
+	private int taskId;
+	private String creatorUid;
+	private String creatorEmail;
 	private String creatorMobile;
 	private String assignedUid;
 	private String assignedShift;
+	private String assignedEmail;
+	private String assignedMobile;
 	private String taskDesc;
 	private String status;
 	private String notifyId;
 	private String createDate;
 	private String targetDate;
-	private String priority;
-	private String assignedEmail;
-	private String assignedMobile;
+	private int priority;
+
 	
 }
