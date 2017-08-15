@@ -43,6 +43,8 @@ public class DatabaseAccess {
 				toDo.setCreatorMobile(rs.getString("CREATOR_MOBILE"));
 				toDo.setAssignedUid(rs.getString("ASSIGNED_UID"));
 				toDo.setAssignedShift(rs.getString("ASSIGNED_SHIFT"));
+				toDo.setAssignedEmail(rs.getString("ASSIGNED_EMAIL"));
+				toDo.setAssignedMobile(rs.getString("ASSIGNED_MOBILE"));
 				toDo.setTaskDesc(rs.getString("TASK_DESC"));
 				toDo.setStatus(rs.getString("STATUS"));
 				toDo.setCreateDate(rs.getString("CREATE_DATE"));
@@ -69,7 +71,7 @@ public class DatabaseAccess {
 				try {
 					rs.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();
 				}
 				rs = null;
 			}
@@ -77,7 +79,7 @@ public class DatabaseAccess {
 				try {
 					stmt.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();
 				}
 				stmt = null;
 			}
@@ -85,7 +87,7 @@ public class DatabaseAccess {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();
 				}
 				conn = null;
 			}
@@ -134,7 +136,7 @@ public class DatabaseAccess {
 				try {
 					stmt.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();;
 				}
 				stmt = null;
 			}
@@ -142,7 +144,7 @@ public class DatabaseAccess {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();;
 				}
 				conn = null;
 			}
@@ -181,7 +183,7 @@ public class DatabaseAccess {
 				try {
 					stmt.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();
 				}
 				stmt = null;
 			}
@@ -189,7 +191,7 @@ public class DatabaseAccess {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();
 				}
 				conn = null;
 			}
@@ -198,13 +200,13 @@ public class DatabaseAccess {
 		return rs;
 	}
 	
-	public boolean addNewToDo(ToDo toDo) {
+	public int addNewToDo(ToDo toDo) {
 
 		Connection conn = null;
 		Statement stmt = null;
-		boolean rs = false;
+		int rs = 0;
 		
-		System.out.println("Add ToDo (Task ID: " + toDo.getTaskId() + ", Create UID: " + toDo.getCreatorUid());
+//		System.out.println("Add ToDo (Task ID: " + toDo.getTaskId() + ", Create UID: " + toDo.getCreatorUid());
 
 		try {
 
@@ -212,14 +214,14 @@ public class DatabaseAccess {
 			stmt = conn.createStatement();
 			
 			String sql = "INSERT INTO HAJJ_TODO_LIST "
-					+ "(TASK_ID, CREATOR_UID, ASSIGNED_UID, ASSIGNED_SHIFT, ASSIGNED_EMAIL, ASSIGNED_MOBILE, TASK_DESC, STATUS, PRIORITY) "
+					+ "(CREATOR_UID, ASSIGNED_UID, ASSIGNED_SHIFT, ASSIGNED_EMAIL, ASSIGNED_MOBILE, TASK_DESC, STATUS, PRIORITY) "
 					+ "VALUES "
-					+ "(" + toDo.getTaskId() + ", '" + toDo.getCreatorUid() + "', '" + toDo.getAssignedUid() + "', '" + toDo.getAssignedShift() +
+					+ "('" + toDo.getCreatorUid() + "', '" + toDo.getAssignedUid() + "', '" + toDo.getAssignedShift() +
 							"', '" + toDo.getAssignedEmail() + "', '" + toDo.getAssignedMobile() + "', '" + toDo.getTaskDesc() + "', 'PENDING', " + toDo.getPriority() + ")";
 			
 			System.out.println("Add ToDo --> SQL: " + sql);
 			
-			rs = stmt.execute(sql);
+			rs = stmt.executeUpdate(sql);
 		
 			stmt.close();
 			stmt = null;
@@ -235,7 +237,7 @@ public class DatabaseAccess {
 				try {
 					stmt.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();
 				}
 				stmt = null;
 			}
@@ -243,7 +245,7 @@ public class DatabaseAccess {
 				try {
 					conn.close();
 				} catch (SQLException e) {
-					;
+					e.printStackTrace();
 				}
 				conn = null;
 			}

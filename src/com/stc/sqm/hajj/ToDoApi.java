@@ -109,7 +109,7 @@ public class ToDoApi {
     	
     	ToDo toDo = new ToDo();
     	
-    	toDo.setTaskId(jsonObject.getInt("taskId"));
+//    	toDo.setTaskId(jsonObject.getInt("taskId"));
     	toDo.setCreatorUid(jsonObject.getString("creatorUid"));
     	toDo.setAssignedUid(jsonObject.getString("assignedUid"));
     	toDo.setAssignedShift(jsonObject.getString("assignedShift"));
@@ -119,9 +119,15 @@ public class ToDoApi {
     	toDo.setStatus("PENDING");
     	toDo.setPriority(jsonObject.getInt("priority"));
     	
-    	boolean result = dbAccess.addNewToDo(toDo);
+    	int rowsInserted = dbAccess.addNewToDo(toDo);
+    	
+    	JSONObject sqlResult = new JSONObject();
+    	
+    	sqlResult.put("addedTods", rowsInserted);  
+
+        String result = sqlResult.toString();    	
         
-        return Response.status(201).entity(result+"").build();
+        return Response.status(201).entity(result).build();
     }
 	
 }
