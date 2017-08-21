@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -253,6 +254,174 @@ public class DatabaseAccess {
 
 		return rs;
 	}
+	
+	
+	public HashMap<String, Utilization> getUtilAll() {
+
+		HashMap<String, Utilization> utilHash = null;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		System.out.println("getUtilAll(...) --> BEGIN");
+
+		try {
+
+			conn = getDBConnection();
+			stmt = conn.createStatement();
+			
+			String sql = "SELECT KPI_DATE, CUSTOMER, CIRCUIT, AVAILABILITY, "
+					+ "CONFIGURED_BANDWIDTH, AVG_UTIL_IN, AVG_UTIL_OUT, "
+					+ "MAX_UTIL_IN, MAX_UTIL_IN_DATE, MAX_UTIL_OUT, MAX_UTIL_OUT_DATE, "
+					+ "AVG_ERROR_IN, AVG_ERROR_OUT, HAJJ, VIP, IS_HAJJ_VIP FROM "
+					+ "MV_DSH_HAJJ_VIP_IV_UTIL_2017"; 
+					
+			rs = stmt.executeQuery(sql);
+
+			utilHash = new HashMap<String, Utilization>();
+
+			while (rs.next()) {
+				Utilization util = new Utilization();
+				util.setKpiDate(rs.getString("KPI_DATE"));
+				util.setCustomer(rs.getString("CUSTOMER"));
+				util.setCircuit(rs.getString("CIRCUIT"));
+				util.setAvailability(rs.getString("AVAILABILITY"));
+				util.setConfiguredBandwidth(rs.getString("CONFIGURED_BANDWIDTH"));
+				util.setAvgUtilIn(rs.getString("AVG_UTIL_IN"));
+				util.setAvgUtilOut(rs.getString("AVG_UTIL_OUT"));
+				util.setMaxUtilIn(rs.getString("MAX_UTIL_IN"));
+				util.setMaxUtilInDate(rs.getString("MAX_UTIL_IN_DATE"));
+				util.setMaxUtilOut(rs.getString("MAX_UTIL_OUT"));
+				util.setMaxUtilOutDate(rs.getString("MAX_UTIL_OUT_DATE"));
+				util.setAvgErrorIn(rs.getString("AVG_ERROR_IN"));
+				util.setAvgErrorOut(rs.getString("AVG_ERROR_OUT"));
+				util.setHajj(rs.getString("HAJJ"));
+				util.setVip(rs.getString("VIP"));
+				util.setIsHajjVip(rs.getString("IS_HAJJ_VIP"));
+				
+				utilHash.put(util.getCircuit(), util);
+			}
+
+
+			rs.close();
+			rs = null;
+			stmt.close();
+			stmt = null;
+			conn.close(); // Return to connection pool
+			conn = null; // Make sure we don't close it twice
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Always make sure result sets and statements are closed,
+			// and the connection is returned to the pool
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				rs = null;
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				stmt = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				conn = null;
+			}
+		}
+
+		return utilHash;
+
+	}
+	
+	
+	public ArrayList<UtilReadings> getUtilReadingsAll() {
+
+		ArrayList<UtilReadings> utilReadingsList = null;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		
+		//System.out.println("getUtilReadingsAll(...) --> BEGIN");
+
+		try {
+
+			conn = getDBConnection();
+			stmt = conn.createStatement();
+			
+			String sql = "SELECT CIRCUIT, SUBSTR(UTIL_DATE, -8, 5) UTIL_DATE, UTIL_IN, UTIL_OUT "
+					+ "FROM MV_DSH_HAJJ_VIP_LATEST_5_2017 WHERE (UTIL_IN IS NOT NULL AND UTIL_OUT IS NOT NULL) "
+					+ "ORDER BY CIRCUIT, UTIL_DATE";
+					
+			rs = stmt.executeQuery(sql);
+
+			utilReadingsList = new ArrayList<UtilReadings>();
+
+			while (rs.next()) {
+				UtilReadings utilR = new UtilReadings();
+				
+				utilR.setUtilDate(rs.getString("UTIL_DATE"));
+				utilR.setCircuit(rs.getString("CIRCUIT"));
+				utilR.setUtilIn(rs.getString("UTIL_IN"));
+				utilR.setUtilOut(rs.getString("UTIL_OUT"));
+				
+				utilReadingsList.add(utilR);
+			}
+
+
+			rs.close();
+			rs = null;
+			stmt.close();
+			stmt = null;
+			conn.close(); // Return to connection pool
+			conn = null; // Make sure we don't close it twice
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			// Always make sure result sets and statements are closed,
+			// and the connection is returned to the pool
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				rs = null;
+			}
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				stmt = null;
+			}
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				conn = null;
+			}
+		}
+
+		return utilReadingsList;
+
+	}
+	
 	
 	
 	public Connection getDBConnection() throws SQLException {
