@@ -68,7 +68,8 @@ public class UtilizationApi {
     		
     		if (u.getUtilReadings() != null && (u.getAvgUtilIn()!=null || u.getAvgUtilOut()!=null || 
     				u.getMaxUtilIn() !=null || u.getMaxUtilOut()!=null)) {
-    		 
+    			
+    			jsonObject.put("vpnlinkname", u.getCircuit());
 	    		jsonObject.put("availability", u.getAvailability());
 	    		jsonObject.put("avgErrIn", u.getAvgErrorIn());
 	    		jsonObject.put("avgErrOut", u.getAvgErrorOut());
